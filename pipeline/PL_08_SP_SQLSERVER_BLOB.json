@@ -1,0 +1,179 @@
+{
+	"name": "PL_08_SP_SQLSERVER_BLOB",
+	"properties": {
+		"description": "Here i'm using auditlog to trace the error information while moving data from SQL DB records to Blob",
+		"activities": [
+			{
+				"name": "SP_SQLServer_Blob_SUCCESS",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CPY_SQLServer_Blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[auditlog].[loadstatus]",
+					"storedProcedureParameters": {
+						"DataRead": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.dataRead",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"LoadStatus": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.executionDetails[0].status",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TableName": {
+							"value": "DimEmployee",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_SERVER_AUDILOG",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CPY_SQLServer_Blob",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_SERVER_SP_AUDITLOG",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AUDIT_BLOB",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "SP_SQLServer_Blob_ON_FAIL",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CPY_SQLServer_Blob",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[auditlog].[loadstatus]",
+					"storedProcedureParameters": {
+						"DataRead": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.dataRead",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.error[0].code",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.errors[0].message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"LoadStatus": {
+							"value": {
+								"value": "@activity('CPY_SQLServer_Blob').output.exceutionDetails[0].status",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TableName": {
+							"value": "DimEmployee",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_SERVER_AUDILOG",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-11-06T17:30:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

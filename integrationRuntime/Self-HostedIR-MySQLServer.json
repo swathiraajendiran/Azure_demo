@@ -1,0 +1,7 @@
+{
+	"name": "Self-HostedIR-MySQLServer",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Connecting the Local MySQL Server with Self-Hosted Runtime"
+	}
+}

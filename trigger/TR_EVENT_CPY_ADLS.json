@@ -1,0 +1,24 @@
+{
+	"name": "TR_EVENT_CPY_ADLS",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_11_TRIGGER",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/event-trigger-csv/blobs/event-csv-data/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/e967b30a-b118-4ea2-8308-73c602bab928/resourceGroups/rg_dev_practice01/providers/Microsoft.Storage/storageAccounts/strgsrc",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "LS_SP_SQL_SERVER",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This linked service is used to connect for pushing data from Azure ADF (SP Activity) to On-Prem SQL Server SP",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "SWATHI\\SQLEXPRESS",
+			"database": "AdventureWorksDW2022",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "datafactory_user",
+			"alwaysEncryptedSettings": {
+				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
+			},
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIxOGE1ZmZhMi03MDNhLTQwNDgtODhkZi0zOTQzZDRmOGY1ZTMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Self-HostedIR-MySQLServer",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

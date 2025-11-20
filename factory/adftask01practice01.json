@@ -1,0 +1,9 @@
+{
+	"name": "adftask01practice01",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3505cc8f-10d8-4cd7-aa5a-ca52c0c6cb63",
+		"tenantId": "e3940298-6190-4d62-a1a3-a929d84c4a58"
+	}
+}
